@@ -21,56 +21,55 @@ export default function MeshBackground() {
     }[] = [];
 
     function resize() {
-      if (!canvas) return;
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      if (!canvas || !canvas.parentElement) return;
+      const parent = canvas.parentElement;
+      canvas.style.width = parent.clientWidth + "px";
+      canvas.style.height = parent.clientHeight + "px";
+      canvas.width = parent.clientWidth * window.devicePixelRatio;
+      canvas.height = parent.clientHeight * window.devicePixelRatio;
       ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
     function initParticles() {
-      if (!canvas) return;
-      const count = Math.floor((canvas.offsetWidth * canvas.offsetHeight) / 15000);
+      if (!canvas || !canvas.parentElement) return;
+      const w = canvas.parentElement.clientWidth;
+      const h = canvas.parentElement.clientHeight;
+      const count = Math.min(Math.floor((w * h) / 8000), 120);
       particles = [];
       for (let i = 0; i < count; i++) {
         particles.push({
-          x: Math.random() * canvas.offsetWidth,
-          y: Math.random() * canvas.offsetHeight,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
         });
       }
     }
 
     function draw() {
-      if (!canvas || !ctx) return;
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
+      if (!canvas || !ctx || !canvas.parentElement) return;
+      const w = canvas.parentElement.clientWidth;
+      const h = canvas.parentElement.clientHeight;
 
       ctx.clearRect(0, 0, w, h);
 
-      // Update positions
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
-
         if (p.x < 0 || p.x > w) p.vx *= -1;
         if (p.y < 0 || p.y > h) p.vy *= -1;
       }
 
-      // Draw connections
-      const maxDist = 120;
-      ctx.strokeStyle = "rgba(91, 141, 239, 0.15)";
-      ctx.lineWidth = 0.5;
-
+      const maxDist = 150;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-
           if (dist < maxDist) {
-            const opacity = (1 - dist / maxDist) * 0.15;
+            const opacity = (1 - dist / maxDist) * 0.35;
             ctx.strokeStyle = `rgba(91, 141, 239, ${opacity})`;
+            ctx.lineWidth = 0.8;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -79,18 +78,16 @@ export default function MeshBackground() {
         }
       }
 
-      // Draw particles
       for (const p of particles) {
-        ctx.fillStyle = "rgba(91, 141, 239, 0.3)";
+        ctx.fillStyle = "rgba(91, 141, 239, 0.6)";
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
         ctx.fill();
       }
 
       animationId = requestAnimationFrame(draw);
     }
 
-    // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -101,25 +98,34 @@ export default function MeshBackground() {
     if (!prefersReducedMotion) {
       draw();
     } else {
-      // Draw once without animation
       draw();
       cancelAnimationFrame(animationId);
     }
 
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
       resize();
       initParticles();
-    });
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
       cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="mesh-bg"
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+      }}
       aria-hidden="true"
     />
   );
