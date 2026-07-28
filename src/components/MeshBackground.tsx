@@ -1,57 +1,56 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function MeshBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [dimensions, setDimensions] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
+    function updateDimensions() {
+      setDimensions({ w: window.innerWidth, h: window.innerHeight });
+    }
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  useEffect(() => {
+    if (dimensions.w === 0 || dimensions.h === 0) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationId: number = 0;
-    let particles: {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-    }[] = [];
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    function resize() {
-      if (!canvas || !canvas.parentElement) return;
-      const parent = canvas.parentElement;
-      canvas.style.width = parent.clientWidth + "px";
-      canvas.style.height = parent.clientHeight + "px";
-      canvas.width = parent.clientWidth * window.devicePixelRatio;
-      canvas.height = parent.clientHeight * window.devicePixelRatio;
-      ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = dimensions.w * dpr;
+    canvas.height = dimensions.h * dpr;
+    ctx.scale(dpr, dpr);
+
+    const w = dimensions.w;
+    const h = dimensions.h;
+    const count = Math.min(Math.floor((w * h) / 8000), 100);
+
+    const particles: { x: number; y: number; vx: number; vy: number }[] = [];
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+      });
     }
 
-    function initParticles() {
-      if (!canvas || !canvas.parentElement) return;
-      const w = canvas.parentElement.clientWidth;
-      const h = canvas.parentElement.clientHeight;
-      const count = Math.min(Math.floor((w * h) / 8000), 120);
-      particles = [];
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-        });
-      }
-    }
+    let animationId = 0;
 
     function draw() {
-      if (!canvas || !ctx || !canvas.parentElement) return;
-      const w = canvas.parentElement.clientWidth;
-      const h = canvas.parentElement.clientHeight;
-
-      ctx.clearRect(0, 0, w, h);
+      ctx!.clearRect(0, 0, w, h);
 
       for (const p of particles) {
         p.x += p.vx;
@@ -60,73 +59,55 @@ export default function MeshBackground() {
         if (p.y < 0 || p.y > h) p.vy *= -1;
       }
 
-      const maxDist = 150;
+      const maxDist = 140;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < maxDist) {
-            const opacity = (1 - dist / maxDist) * 0.35;
-            ctx.strokeStyle = `rgba(91, 141, 239, ${opacity})`;
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
+            const opacity = (1 - dist / maxDist) * 0.4;
+            ctx!.strokeStyle = `rgba(91, 141, 239, ${opacity})`;
+            ctx!.lineWidth = 0.7;
+            ctx!.beginPath();
+            ctx!.moveTo(particles[i].x, particles[i].y);
+            ctx!.lineTo(particles[j].x, particles[j].y);
+            ctx!.stroke();
           }
         }
       }
 
       for (const p of particles) {
-        ctx.fillStyle = "rgba(91, 141, 239, 0.6)";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-        ctx.fill();
+        ctx!.fillStyle = "rgba(91, 141, 239, 0.7)";
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx!.fill();
       }
 
-      animationId = requestAnimationFrame(draw);
+      if (!prefersReducedMotion) {
+        animationId = requestAnimationFrame(draw);
+      }
     }
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    resize();
-    initParticles();
-
-    if (!prefersReducedMotion) {
-      draw();
-    } else {
-      draw();
-      cancelAnimationFrame(animationId);
-    }
-
-    const handleResize = () => {
-      resize();
-      initParticles();
-    };
-
-    window.addEventListener("resize", handleResize);
+    draw();
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [dimensions]);
 
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       style={{
         position: "absolute",
-        top: 0,
-        left: 0,
+        inset: 0,
         width: "100%",
         height: "100%",
+        opacity: 0.6,
         pointerEvents: "none",
       }}
-      aria-hidden="true"
     />
   );
 }
