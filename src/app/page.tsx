@@ -63,7 +63,7 @@ export default function AboutPage() {
         <div className="space-y-14">
           <ScrollReveal delay={0.15}>
             <Section title="Who am I">
-              I&apos;m Ankur Chopra. I&apos;ve spent 20+ years in the technology industry,
+              I&apos;m Ankur Chopra. I've spent 20+ years in the technology industry,
               wearing many hats — engineer, strategist, leader. Somewhere along the way, I
               became deeply fascinated by AI and its power to change how we work, think, and
               create.
@@ -80,16 +80,16 @@ export default function AboutPage() {
 
           <ScrollReveal delay={0.25}>
             <Section title="Why blog now">
-              Because AI isn&apos;t a future thing anymore — it&apos;s a right now thing.
-              It&apos;s reshaping careers, industries, and everyday life. And the conversation
-              around it shouldn&apos;t be locked behind technical walls or boardroom slides.
+              Because AI isn't a future thing anymore — it's a right now thing.
+              It's reshaping careers, industries, and everyday life. And the conversation
+              around it shouldn't be locked behind technical walls or boardroom slides.
               Everyone deserves a seat at this table.
             </Section>
           </ScrollReveal>
 
           <ScrollReveal delay={0.3}>
             <Section title="Who is this blog for">
-              You. Whether you&apos;re a student just starting out, a professional navigating
+              You. Whether you're a student just starting out, a professional navigating
               a career shift, or a senior leader trying to make sense of the AI wave — this
               blog is for the curious. No prerequisites. Just bring your questions.
             </Section>
@@ -152,4 +152,3 @@ function Section({
     </div>
   );
 }
-
