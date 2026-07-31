@@ -2,13 +2,24 @@ import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import ScrollReveal from "@/components/ScrollReveal";
 
-const COVER_IMAGES = [
+const COVER_IMAGES: Record<string, string> = {
+  "agents-dont-wait-agentic-ai": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop&q=80",
+  "ceo-conversation-generative-ai-cost-efficiency": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop&q=80",
+  "brains-behind-the-magic-foundation-models": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&h=400&fit=crop&q=80",
+  "prompt-engineering-asking-better-questions": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop&q=80",
+  "data-the-fuel-for-ai": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop&q=80",
+  "future-of-ai-agents": "https://images.unsplash.com/photo-1676299081847-824916de030a?w=600&h=400&fit=crop&q=80",
+  "career-advice-for-tech-professionals": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&q=80",
+  "building-with-large-language-models": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&q=80",
+};
+
+const FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&q=80",
   "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&h=400&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1676299081847-824916de030a?w=600&h=400&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&q=80",
   "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop&q=80",
 ];
 
 export const metadata = {
@@ -49,7 +60,7 @@ export default function BlogPage() {
                 {/* Cover image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={COVER_IMAGES[i % COVER_IMAGES.length]}
+                    src={COVER_IMAGES[post.slug] || FALLBACK_IMAGES[i % FALLBACK_IMAGES.length]}
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-medium brightness-75 saturate-[0.8]"
                   />

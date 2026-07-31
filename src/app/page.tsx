@@ -158,9 +158,11 @@ export default function Home() {
                       <div className="relative h-48 overflow-hidden rounded-t-2xl">
                         <img
                           src={
-                            i % 2 === 0
+                            i % 3 === 0
+                              ? "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop&q=80"
+                              : i % 3 === 1
                               ? "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&h=400&fit=crop&q=80"
-                              : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&q=80"
+                              : "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop&q=80"
                           }
                           alt={post.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-medium brightness-75 saturate-[0.8]"
