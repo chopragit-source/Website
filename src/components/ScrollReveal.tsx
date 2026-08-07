@@ -20,8 +20,8 @@ export default function ScrollReveal({
   delay = 0,
   direction = "up",
   className = "",
-  distance = 80,
-  duration = 1.2,
+  distance = 100,
+  duration = 1.4,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -51,7 +51,7 @@ export default function ScrollReveal({
       ease: "power3.out",
       scrollTrigger: {
         trigger: el,
-        start: "top 85%",
+        start: "top 88%",
         end: "top 20%",
         toggleActions: "play none none none",
       },
@@ -59,9 +59,7 @@ export default function ScrollReveal({
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === el) {
-          trigger.kill();
-        }
+        if (trigger.trigger === el) trigger.kill();
       });
     };
   }, [delay, direction, distance, duration]);
