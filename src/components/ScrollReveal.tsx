@@ -1,13 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ScrollRevealProps {
-  children: ReactNode;
+  children: React.ReactNode;
   delay?: number;
   direction?: "up" | "left" | "right" | "none";
   className?: string;
+  distance?: number;
+  duration?: number;
 }
 
 export default function ScrollReveal({
@@ -15,35 +20,55 @@ export default function ScrollReveal({
   delay = 0,
   direction = "up",
   className = "",
+  distance = 80,
+  duration = 1.2,
 }: ScrollRevealProps) {
-  const directionOffset = {
-    up: { y: 40, x: 0 },
-    left: { y: 0, x: -40 },
-    right: { y: 0, x: 40 },
-    none: { y: 0, x: 0 },
-  };
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const directionOffset = {
+      up: { y: distance, x: 0 },
+      left: { y: 0, x: -distance },
+      right: { y: 0, x: distance },
+      none: { y: 0, x: 0 },
+    };
+
+    gsap.set(el, {
+      opacity: 0,
+      y: directionOffset[direction].y,
+      x: directionOffset[direction].x,
+    });
+
+    gsap.to(el, {
+      opacity: 1,
+      y: 0,
+      x: 0,
+      duration,
+      delay,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        end: "top 20%",
+        toggleActions: "play none none none",
+      },
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.trigger === el) {
+          trigger.kill();
+        }
+      });
+    };
+  }, [delay, direction, distance, duration]);
 
   return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: directionOffset[direction].y,
-        x: directionOffset[direction].x,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        x: 0,
-      }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{
-        duration: 0.7,
-        delay,
-        ease: [0.25, 0.1, 0.25, 1],
-      }}
-      className={className}
-    >
+    <div ref={ref} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
