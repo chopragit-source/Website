@@ -1,16 +1,11 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://website-chopragit-source.vercel.app";
-
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/api/"],
-      },
-    ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+    sitemap: "https://website-ankurchopra.vercel.app/sitemap.xml",
   };
 }
