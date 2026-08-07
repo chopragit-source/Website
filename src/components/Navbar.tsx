@@ -1,30 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-xl border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+        scrolled
+          ? "bg-black/90 backdrop-blur-xl border-b border-white/5"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
         <Link
           href="/"
-          className="text-lg font-bold tracking-tight hover:text-[#ff3b30] transition-fast"
+          className="text-spaced text-xs tracking-[0.4em] hover:text-[#ff3b30] transition-fast"
         >
-          ◆ BLOG
+          ANKUR CHOPRA
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           <NavLink href="/">Home</NavLink>
           <NavLink href="/blog">Writing</NavLink>
           <NavLink href="/about">About</NavLink>
           <NavLink href="/contact">Contact</NavLink>
           <Link
             href="/book"
-            className="px-5 py-2 rounded-full bg-[#ff3b30] text-white text-sm font-semibold hover:bg-[#e6352b] transition-fast"
+            className="text-spaced px-6 py-3 border border-white/20 hover:border-[#ff3b30] hover:text-[#ff3b30] transition-medium"
           >
             Book a Call
           </Link>
@@ -32,25 +47,25 @@ export default function Navbar() {
 
         {/* Mobile Hamburger */}
         <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
+          className="md:hidden flex flex-col gap-2 p-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
           <span
-            className={`w-5 h-[2px] bg-white transition-medium ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`}
+            className={`w-6 h-[1px] bg-white transition-medium ${menuOpen ? "rotate-45 translate-y-[9px]" : ""}`}
           />
           <span
-            className={`w-5 h-[2px] bg-white transition-medium ${menuOpen ? "opacity-0" : ""}`}
+            className={`w-6 h-[1px] bg-white transition-medium ${menuOpen ? "opacity-0" : ""}`}
           />
           <span
-            className={`w-5 h-[2px] bg-white transition-medium ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`}
+            className={`w-6 h-[1px] bg-white transition-medium ${menuOpen ? "-rotate-45 -translate-y-[9px]" : ""}`}
           />
         </button>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-black/95 backdrop-blur-xl border-t border-white/5 px-6 py-8 space-y-6">
+        <div className="md:hidden bg-black/98 backdrop-blur-xl border-t border-white/5 px-8 py-12 space-y-8 animate-fade-in">
           <MobileLink href="/" onClick={() => setMenuOpen(false)}>Home</MobileLink>
           <MobileLink href="/blog" onClick={() => setMenuOpen(false)}>Writing</MobileLink>
           <MobileLink href="/about" onClick={() => setMenuOpen(false)}>About</MobileLink>
@@ -66,7 +81,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="text-sm text-[#999999] hover:text-white transition-fast font-medium"
+      className="text-spaced text-[#999999] hover:text-white transition-fast"
     >
       {children}
     </Link>
@@ -78,7 +93,7 @@ function MobileLink({ href, children, onClick }: { href: string; children: React
     <Link
       href={href}
       onClick={onClick}
-      className="block text-2xl font-bold text-white hover:text-[#ff3b30] transition-fast"
+      className="block text-2xl font-light tracking-wider text-white hover:text-[#ff3b30] transition-fast"
     >
       {children}
     </Link>
