@@ -5,58 +5,40 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About — Ankur Chopra",
-  description:
-    "Who I am, why this blog exists, and what you can expect from it.",
+  description: "Who I am, why this blog exists, and what you can expect.",
 };
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-screen pt-28 pb-24">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[#ff3b30]/8 rounded-full blur-[160px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#af52de]/6 rounded-full blur-[140px]" />
-      </div>
-
-      <div className="relative z-10 max-w-3xl mx-auto px-6">
+    <div className="relative min-h-screen pt-32 pb-32">
+      <div className="max-w-4xl mx-auto px-8">
+        {/* Header */}
         <ScrollReveal>
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#ff3b30] mb-4">
-            About
-          </p>
-          <h1 className="text-display text-4xl md:text-6xl mb-16">
-            The story behind
-            <span className="text-gradient-fire"> this blog.</span>
+          <p className="text-spaced text-[#ff3b30] mb-6">About</p>
+          <h1 className="text-display-spaced text-4xl md:text-6xl mb-20">
+            The story behind this blog.
           </h1>
         </ScrollReveal>
 
+        {/* Avatar */}
         <ScrollReveal delay={0.1}>
-          <div className="flex items-center gap-5 mb-16">
-            <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 shadow-[0_0_30px_rgba(255,59,48,0.2)]">
-              <div
-                className="absolute inset-0 rounded-full p-[2px]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff3b30, #ff9500, #af52de, #5ac8fa, #ff3b30)",
-                  backgroundSize: "300% 300%",
-                  animation: "gradientShift 4s ease infinite",
-                }}
-              >
-                <div className="w-full h-full rounded-full overflow-hidden">
-                  <img
-                    src="https://raw.githubusercontent.com/chopragit-source/Website/main/avatar.jpeg"
-                    alt="Ankur Chopra"
-                    className="w-full h-full object-cover object-center scale-110"
-                  />
-                </div>
-              </div>
+          <div className="flex items-center gap-6 mb-20">
+            <div className="w-20 h-20 rounded-full overflow-hidden border border-white/10">
+              <img
+                src="https://raw.githubusercontent.com/chopragit-source/Website/main/avatar.jpeg"
+                alt="Ankur Chopra"
+                className="w-full h-full object-cover object-center scale-110"
+              />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Ankur Chopra</h2>
-              <p className="text-sm text-[#999999]">Writer · AI Enthusiast · Builder</p>
+              <h2 className="text-lg font-light tracking-wide">Ankur Chopra</h2>
+              <p className="text-spaced text-[#666] mt-1">Writer · AI Enthusiast · Builder</p>
             </div>
           </div>
         </ScrollReveal>
 
-        <div className="space-y-14">
+        {/* Sections */}
+        <div className="space-y-20">
           <ScrollReveal delay={0.15}>
             <Section title="Who am I">
               I'm Ankur Chopra. I've spent 20+ years in the technology industry,
@@ -100,26 +82,27 @@ export default function AboutPage() {
           </ScrollReveal>
         </div>
 
+        {/* CTA */}
         <ScrollReveal delay={0.4}>
-          <div className="mt-20 pt-12 border-t border-white/5">
-            <p className="text-[#999999] text-sm mb-6">
+          <div className="mt-24 pt-16 border-t border-white/5">
+            <p className="text-sm text-[#666] mb-8">
               Want to connect, collaborate, or just say hello?
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-6">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#ff3b30] text-white text-xs font-bold uppercase tracking-wider hover:shadow-[0_0_40px_rgba(255,59,48,0.4)] transition-all duration-300"
+                className="text-spaced px-10 py-4 bg-[#ff3b30] text-white hover:bg-[#e6352b] transition-medium inline-block"
               >
                 Send a Message
               </Link>
               <Link
                 href="/book"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 text-white text-xs font-bold uppercase tracking-wider hover:border-[#ff3b30] transition-all duration-300"
+                className="text-spaced px-10 py-4 border border-white/20 hover:border-[#ff3b30] hover:text-[#ff3b30] transition-medium inline-block"
               >
                 Book a Call
               </Link>
             </div>
-            <div className="mt-8">
+            <div className="mt-10">
               <SocialLinks />
             </div>
           </div>
@@ -129,19 +112,11 @@ export default function AboutPage() {
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-[#ff3b30] mb-3">
-        {title}
-      </h3>
-      <p className="text-base md:text-lg text-[#cccccc] leading-relaxed">
+      <h3 className="text-spaced text-[#ff3b30] mb-4">{title}</h3>
+      <p className="text-base md:text-lg text-[#999] leading-relaxed font-light">
         {children}
       </p>
     </div>
